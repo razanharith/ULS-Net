@@ -142,27 +142,13 @@ If you find this work useful for your research, please cite our manuscript:
 
 ```bibtex
 @article{alharith2025uls,
-  title={ULS-MSA: Ultra-Lightweight Skin Lesion Segmentation for Practical Deployment in Resource-Limited Clinical Settings},
-  author={Alharith, Razan and [Co-authors]},
+  title={Ultra-Lightweight Skin Lesion Segmentation for Practical Deployment in Resource-Limited Clinical Settings},
+  author={Razan Alharith, Jiashu Zhang, Ashraf Osman Ibrahim and Zaid Al-Huda},
   journal={Neural Networks},
   year={2025},
   note={Under Review}
 }
 ```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- ISIC Archive for providing the dermoscopic image datasets
-- Pedro Hispano Hospital for the PH2 dataset
-- Southwest Jiaotong University for supporting this research
 
 ---
 
