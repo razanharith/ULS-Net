@@ -137,21 +137,6 @@ This will compute:
 - Recall
 - Inference time per image
 
----
-
-## 📝 Citation
-
-If you find this work useful for your research, please cite our manuscript:
-
-```bibtex
-@article{alharith2025uls,
-  title={Ultra-Lightweight Skin Lesion Segmentation for Practical Deployment in Resource-Limited Clinical Settings},
-  author={Razan Alharith, Jiashu Zhang, Ashraf Osman Ibrahim and Zaid Al-Huda},
-  journal={Neural Networks},
-  year={2025},
-  note={Under Review}
-}
-```
 
 ---
 
