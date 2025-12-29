@@ -8,7 +8,7 @@ The model was trained and tested on three dataset :
 3. PH2 : https://www.kaggle.com/datasets/spacesurfer/ph2-dataset
 
 # Archirecture:
-![Framework](https://github.com/user-attachments/assets/23c3bed8-986e-4e24-8a31-7ca1ae651ce6)
+![Framework](ULS-MSA.pdf)
 
 
 # Requirements
