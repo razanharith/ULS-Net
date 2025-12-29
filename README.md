@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ---
 
-## 📁 Dataset Preparation
+## 📁 **Dataset Preparation**
 
 We employ three publicly available benchmarks. Please place them in the following directory structure:
 
@@ -67,7 +67,7 @@ We employ three publicly available benchmarks. Please place them in the followin
 
 ---
 
-## 📝 Citation
+## 📝 **Citation**
 
 If you find this work useful for your research, please cite our manuscript:
 
