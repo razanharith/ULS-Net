@@ -52,3 +52,30 @@ The experiments were implemented in **PyTorch** and run on a workstation with an
 git clone [https://github.com/razanalharith/ULS-MSA.git](https://github.com/razanalharith/ULS-MSA.git)
 cd ULS-MSA
 pip install -r requirements.txt
+
+
+
+---
+
+## 📁 Dataset Preparation
+
+We employ three publicly available benchmarks. Please place them in the following directory structure:
+
+- **ISIC-2017:** [Kaggle Link](https://www.kaggle.com/) (2,000 images)
+- **ISIC-2018:** [Kaggle Link](https://www.kaggle.com/) (3,694 images)
+- **PH2:** [Kaggle Link](https://www.kaggle.com/) (200 images)
+
+---
+
+## 📝 Citation
+
+If you find this work useful for your research, please cite our manuscript:
+
+
+
+---
+
+## ✉️ Contact
+
+**Razan Alharith** (Southwest Jiaotong University)  
+Email: razanalharith@my.swjtu.edu.cn
