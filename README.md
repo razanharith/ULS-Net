@@ -2,8 +2,8 @@
 
 This is the official implementation of the **ULS-MSA** (ULtra-Lightweight Segmentation with Multi-Scale Edge-Aware Subspace Attention) model as proposed in our paper submitted to *Neural Networks*.
 
-📄 **Paper**: [Link to be added]  
-🚀 **Key Highlights**: 0.24M Parameters | 2.6 GFLOPs | 0.0055s Inference Time
+ **Submittied to**: [Link to be added]  
+ **Key Highlights**: 0.24M Parameters | 2.6 GFLOPs | 0.0055s Inference Time
 
 ULS-MSA is specifically engineered for resource-constrained environments such as rural clinics, primary care offices, and mobile health (mHealth) applications—where high-end GPU servers are unavailable and data privacy is paramount.
 
@@ -21,7 +21,7 @@ The network employs a unique **"division of labor"** strategy to achieve high pr
 
 ---
 
-## 📊 Performance Results
+##  Performance Results
 
 ULS-MSA consistently outperforms state-of-the-art lightweight models across three challenging public benchmark datasets.
 
@@ -36,7 +36,7 @@ ULS-MSA consistently outperforms state-of-the-art lightweight models across thre
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Requirements
 The experiments were implemented in **PyTorch** and run on a workstation with an Intel Core i5-8500 and an NVIDIA GeForce GTX 1070.
@@ -98,7 +98,7 @@ ULS-MSA/
 
 ---
 
-## 🎯 Training
+##  Training
 
 To train ULS-MSA on a specific dataset: 
 
@@ -122,7 +122,7 @@ python train.py --dataset PH2 --epochs 100 --batch_size 8
 
 ---
 
-## 🧪 Evaluation
+##  Evaluation
 
 To evaluate a trained model:
 
@@ -140,9 +140,8 @@ This will compute:
 
 ---
 
-## ✉️ Contact
+##  Contact
 
 **Razan Alharith**  
-Southwest Jiaotong University  
-📧 Email: razanalharith@my.swjtu.edu.cn
+Southwest Jiaotong University  | Email: razanalharith@my.swjtu.edu.cn
 
