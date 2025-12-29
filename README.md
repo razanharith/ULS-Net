@@ -1,11 +1,11 @@
-# ULS-MSA: Ultra-Lightweight Skin Lesion Segmentation for Practical Deployment in Resource-Limited Clinical Settings
+# Ultra-Lightweight Skin Lesion Segmentation for Practical Deployment in Resource-Limited Clinical Settings
 
 This is the official implementation of the **ULS-MSA** (ULtra-Lightweight Segmentation with Multi-Scale Edge-Aware Subspace Attention) model as proposed in our paper submitted to *Neural Networks*.
 
 📄 **Paper**: [Link to be added]  
 🚀 **Key Highlights**: 0.24M Parameters | 2.6 GFLOPs | 0.0055s Inference Time
 
-ULS-MSA is specifically engineered for resource-constrained environments—such as rural clinics, primary care offices, and mobile health (mHealth) applications—where high-end GPU servers are unavailable and data privacy is paramount.
+ULS-MSA is specifically engineered for resource-constrained environments such as rural clinics, primary care offices, and mobile health (mHealth) applications—where high-end GPU servers are unavailable and data privacy is paramount.
 
 ---
 
