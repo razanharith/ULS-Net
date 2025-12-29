@@ -16,6 +16,9 @@ The network employs a unique **"division of labor"** strategy to achieve high pr
 * **Boundary Detection Module (BDM)**: Utilizes fixed-weight Gaussian and Laplacian kernels to explicitly capture high-frequency edge details, avoiding the prohibitive costs of fully learnable edge modules.
 * **Squeeze-Edge Attention Lightweight (SEAL) Block**: Recalibrates semantic features efficiently using enhanced depthwise separable convolutions (EDSC) and channel attention.
 * **Optimized for Deployment**: With only **0.24 million parameters**, ULS-MSA is over 4.7x smaller than existing lightweight models like LightMUNet.
+
+![Framework](ULS-MSA.jpg)
+
 ---
 
 ## 📊 Performance Results
