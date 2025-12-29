@@ -2,14 +2,14 @@
 
 This is the official implementation of the **ULS-MSA** (ULtra-Lightweight Segmentation with Multi-Scale Edge-Aware Subspace Attention) model as proposed in our paper submitted to *Neural Networks*.
 
- **Submittied to**: [Link to be added]  
+ **Submittied to**: [Neural Networks]  
  **Key Highlights**: 0.24M Parameters | 2.6 GFLOPs | 0.0055s Inference Time
 
 ULS-MSA is specifically engineered for resource-constrained environments such as rural clinics, primary care offices, and mobile health (mHealth) applications—where high-end GPU servers are unavailable and data privacy is paramount.
 
 ---
 
-## 🏗️ Model Architecture
+## Model Architecture
 
 The network employs a unique **"division of labor"** strategy to achieve high precision without computational bloat:
 
@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ---
 
-## 📁 Dataset Preparation
+## Dataset Preparation
 
 We employ three publicly available benchmarks for skin lesion segmentation: 
 
