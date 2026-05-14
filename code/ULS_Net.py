@@ -134,10 +134,10 @@ class EnhancedBlock(nn.Module):
             
         return out
 
-class ULS_MSA_v2(nn.Module):
+class ULS_Net(nn.Module):
     """Enhanced ULS_MSA with LMNet components to solve RC=1.0000"""
     def __init__(self, img_ch=3, output_ch=1):
-        super(ULS_MSA_v2, self).__init__()
+        super(ULS_Net, self).__init__()
 
         # Encoder pathway with enhanced blocks
         self.input_conv = nn.Conv2d(img_ch, 16, kernel_size=3, padding=1, bias=False)
@@ -220,4 +220,4 @@ class ULS_MSA_v2(nn.Module):
         return output
 
 # For backward compatibility
-ULS_MSA = ULS_MSA_v2
+ULS_MSA = ULS_Net
