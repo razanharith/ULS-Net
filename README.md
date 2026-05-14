@@ -17,7 +17,7 @@ The network employs a unique **"division of labor"** strategy to achieve high pr
 * **Squeeze-Edge Attention Lightweight (SEAL) Block**: Recalibrates semantic features efficiently using enhanced depthwise separable convolutions (EDSC) and channel attention.
 * **Optimized for Deployment**: With only **0.24 million parameters**, ULS-MSA is over 4.7x smaller than existing lightweight models like LightMUNet.
 
-![Framework](ULS-MSA.jpg)
+![Framework](framework.png)
 
 ---
 
