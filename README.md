@@ -6,7 +6,7 @@ ULS-Net (ULtra-Lightweight Segmentation Network) is a boundary-semantic decouple
 
 ## Architecture
 
-![ULS-Net Architecture](ULS-MSA.jpg)
+![ULS-Net Architecture](framework.png)
 
 ULS-Net follows a U-shaped encoder-decoder with a **division-of-labour** design: semantic feature extraction and boundary refinement are assigned to separate specialised components, rather than forcing a single encoder to handle both within a tight parameter budget.
 
