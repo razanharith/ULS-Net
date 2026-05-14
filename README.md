@@ -1,147 +1,169 @@
-# Ultra-Lightweight Skin Lesion Segmentation for Practical Deployment in Resource-Limited Clinical Settings
+# ULS-Net: A Boundary-Semantic Decoupled Network for Ultra-Lightweight Skin Lesion Segmentation
 
-This is the official implementation of the **ULS-MSA** (ULtra-Lightweight Segmentation with Multi-Scale Edge-Aware Subspace Attention) model as proposed in our paper submitted to *Neural Networks*.
+## Overview
 
- **Submittied to**: [Neural Networks]  
- **Key Highlights**: 0.24M Parameters | 2.6 GFLOPs | 0.0055s Inference Time
+ULS-Net (ULtra-Lightweight Segmentation Network) is a boundary-semantic decoupled architecture for skin lesion segmentation targeting resource-constrained clinical deployment — primary care offices, rural clinics, and mobile health platforms. The model achieves **0.16M Parameters | 1.85 GFLOPs | 3.0ms Inference Time**, making it 7.2× smaller than the next-smallest comparable model while attaining the best F1-score and mIoU on two of three benchmarks.
 
-ULS-MSA is specifically engineered for resource-constrained environments such as rural clinics, primary care offices, and mobile health (mHealth) applications—where high-end GPU servers are unavailable and data privacy is paramount.
+## Architecture
 
----
+![ULS-Net Architecture](ULS-MSA.jpg)
 
-## Model Architecture
-
-The network employs a unique **"division of labor"** strategy to achieve high precision without computational bloat:
-
-* **Boundary Detection Module (BDM)**: Utilizes fixed-weight Gaussian and Laplacian kernels to explicitly capture high-frequency edge details, avoiding the prohibitive costs of fully learnable edge modules.
-* **Squeeze-Edge Attention Lightweight (SEAL) Block**: Recalibrates semantic features efficiently using enhanced depthwise separable convolutions (EDSC) and channel attention.
-* **Optimized for Deployment**: With only **0.24 million parameters**, ULS-MSA is over 4.7x smaller than existing lightweight models like LightMUNet.
-
-![Framework](framework.png)
-
----
-
-##  Performance Results
-
-ULS-MSA consistently outperforms state-of-the-art lightweight models across three challenging public benchmark datasets.
-
-### Quantitative Comparison (mIoU & F1-Score)
-| Dataset | mIoU | F1-Score | Precision | Recall | Params |
-| :--- | :---: | :---:  | :---: | :---:  | :---: |
-| **ISIC-2017** | **0.7989** | **0.7978** | 0.9227 | 0.7499 | 0.24M |
-| **ISIC-2018** | **0.8408** | **0.8693** | 0.8772 | 0.8936 | 0.24M |
-| **PH2** | **0.9040** | **0.9379** | 0.9443 | 0.9355 | 0.24M |
-
-*Data compiled from Tables 2 and 3 of the manuscript.*
-
----
-
-##  Quick Start
-
-### 1. Requirements
-The experiments were implemented in **PyTorch** and run on a workstation with an Intel Core i5-8500 and an NVIDIA GeForce GTX 1070.
-
-* python 3.7.5+
-* pytorch 2.2.0
-* opencv 4.9.0
-* numpy 1.26.4
-* scipy 1.11.4
-* matplotlib 3.8.0
-
-### 2. Installation
-```bash
-git clone https://github.com/razanalharith/ULS-MSA. git
-cd ULS-MSA
-pip install -r requirements.txt
-```
-
----
-
-## Dataset Preparation
-
-We employ three publicly available benchmarks for skin lesion segmentation: 
-
-### Supported Datasets
-
-1. **ISIC-2017 Segmentation Dataset**
-   - 2,000 dermoscopic images with ground truth masks
-   - [Download from ISIC Archive](https://challenge.isic-archive.com/data/)
-   
-2. **ISIC-2018 Task 1: Lesion Boundary Segmentation**
-   - 3,694 dermoscopic images with pixel-level annotations
-   - [Download from ISIC Archive](https://challenge.isic-archive.com/data/)
-   
-3. **PH2 Dataset**
-   - 200 dermoscopic images from Pedro Hispano Hospital
-   - [Download Link](https://www.fc.up.pt/addi/ph2%20database.html)
-
-### Directory Structure
-
-After downloading, organize the datasets as follows:
+ULS-Net follows a U-shaped encoder-decoder with a **division-of-labour** design: semantic feature extraction and boundary refinement are assigned to separate specialised components, rather than forcing a single encoder to handle both within a tight parameter budget.
 
 ```
-ULS-MSA/
-├── data/
-│   ├── ISIC2017/
-│   │   ├── images/
-│   │   └── masks/
-│   ├── ISIC2018/
-│   │   ├── images/
-│   │   └── masks/
-│   └── PH2/
-│       ├── images/
-│       └── masks/
-├── models/
-├── utils/
-└── train.py
+Input (225×225×3)
+    ↓  Stem: Conv3×3 → GroupNorm → PReLU  [16 ch]
+    ↓
+    Encoder 1: SEAL Block → MaxPool   [32 ch, 112×112]
+    Encoder 2: SEAL Block → MaxPool   [64 ch,  56×56 ]
+    Encoder 3: SEAL Block → MaxPool   [128 ch, 28×28 ]
+    Bottleneck: SEAL Block + Dropout  [128 ch, 28×28 ]
+    ↓
+    Decoder 3: Concat + SEAL Block    [64 ch,  56×56 ]
+    Decoder 2: Concat + SEAL Block    [32 ch, 112×112]
+    Decoder 1: Concat + SEAL Block    [16 ch, 225×225]
+    ↓
+    BDM → Conv1×1 → Output mask      [1 ch,  225×225]
 ```
 
----
+## Key Modules
 
-##  Training
+**SEAL Block — Squeeze-Edge Attention Lightweight Block**
+The fundamental building unit of both encoder and decoder. Integrates three components:
+- **EDSC (Enhanced Depthwise Separable Convolution)**: factorises standard convolutions into depthwise + pointwise operations with GroupNorm and PReLU, reducing parameters ~7.9× versus standard convolutions
+- **SEM (Squeeze-and-Excitation Module)**: channel attention via global average pooling → FC bottleneck (reduction ratio r=8) → sigmoid recalibration, compensating for representational loss in the compact channel space
+- **Residual connection**: preserves gradient flow and identity mappings during early training
 
-To train ULS-MSA on a specific dataset: 
+Because the BDM handles boundary preservation, the SEAL block focuses entirely on semantic features — allowing the SEM to amplify discriminative channel responses without being tasked with compensating for lost edge information.
 
-```bash
-# Train on ISIC-2017
-python train.py --dataset ISIC2017 --epochs 100 --batch_size 16
+**BDM — Boundary Detection Module**
+Fixed-weight boundary detector applied at full resolution on the final decoder output. Uses two complementary operators at σ=1.0:
+- **DoG (Difference of Gaussian)**: band-pass filter sensitive to step edges
+- **LoG (Laplacian of Gaussian)**: sensitive to closed contours and fine textural transitions
 
-# Train on ISIC-2018
-python train.py --dataset ISIC2018 --epochs 100 --batch_size 16
+Each operator output passes through 1×1 conv → PReLU → GroupNorm; both are fused via element-wise multiplication (emphasising locations where both operators agree), followed by 3×3 max pooling and a 1×1 conv refinement with residual connection. The BDM adds only **0.75K learnable parameters** and requires no edge supervision — it captures high-frequency boundary information at near-zero parameter cost using deterministic, mathematically well-understood operators.
 
-# Train on PH2
-python train.py --dataset PH2 --epochs 100 --batch_size 8
-```
+## Loss Function
 
-### Training Options
-- `--dataset`: Dataset name (ISIC2017, ISIC2018, PH2)
-- `--epochs`: Number of training epochs (default: 100)
-- `--batch_size`: Batch size (default: 16)
-- `--lr`: Learning rate (default: 0.001)
-- `--save_path`: Path to save trained models
+Composite loss combining pixel-level and region-based objectives:
 
----
+$$\mathcal{L}_\text{total} = \mathcal{L}_\text{BCE} + \alpha(\mathcal{L}_\text{Dice} + \mathcal{L}_\text{IoU})$$
 
-##  Evaluation
+α follows an annealing schedule: initialised at 0.8, reduced by 0.2 every 70 epochs. Early training emphasises region-level Dice and IoU losses (robust to class imbalance); later training shifts toward pixel-level BCE for boundary precision.
 
-To evaluate a trained model:
+## Results
+
+### ISIC-2017 and ISIC-2018
+
+| Model | ISIC-2017 F1 | ISIC-2017 mIoU | ISIC-2018 F1 | ISIC-2018 mIoU | Params |
+|-------|-------------|----------------|-------------|----------------|--------|
+| EMCADNet-b0 | **0.8168** | **0.8081** | 0.8647 | 0.8314 | 3.92M |
+| CMUNeXt | 0.8162 | 0.8034 | 0.8375 | 0.8134 | 3.15M |
+| Rolling-UNet-S | 0.7874 | 0.7801 | 0.8508 | 0.8220 | 1.78M |
+| UNeXt | 0.7932 | 0.7860 | 0.8563 | 0.8292 | 1.47M |
+| ShuffleNetV2 | 0.8002 | 0.7899 | 0.8504 | 0.8256 | 1.38M |
+| LightM-UNet | 0.7415 | 0.7490 | 0.7878 | 0.7628 | 1.15M |
+| **ULS-Net (ours)** | 0.7978 | 0.7989 | **0.8693** | **0.8408** | **0.16M** |
+
+### PH2
+
+| Model | Recall | Precision | F1 | mIoU | Params |
+|-------|--------|-----------|----|----|--------|
+| EMCADNet-b0 | 0.8216 | 0.6442 | 0.6396 | 0.5847 | 3.92M |
+| CMUNeXt | 0.8912 | 0.9136 | 0.8873 | 0.8271 | 3.15M |
+| Rolling-UNet-S | 0.9318 | 0.8930 | 0.9022 | 0.8383 | 1.78M |
+| UNeXt | 0.8773 | **0.9536** | 0.9079 | 0.8514 | 1.47M |
+| ShuffleNetV2 | 0.9020 | 0.9330 | 0.9080 | 0.8543 | 1.38M |
+| LightM-UNet | 0.9274 | 0.8825 | 0.9017 | 0.8382 | 1.15M |
+| **ULS-Net (ours)** | **0.9355** | 0.9443 | **0.9379** | **0.9040** | **0.16M** |
+
+ULS-Net achieves the best F1 and mIoU on ISIC-2018 and PH2, outperforming models with up to 24× more parameters. On ISIC-2017, it achieves the highest Precision (0.9227) across all models.
+
+### Model Complexity
+
+| Model | Params (M) | FLOPs (G) | Time/Image (ms) |
+|-------|-----------|-----------|-----------------|
+| EMCADNet-b0 | 3.92 | 1.28 | 15.8 |
+| CMUNeXt | 3.15 | 11.28 | 7.9 |
+| Rolling-UNet-S | 1.78 | 3.22 | 26.8 |
+| UNeXt | 1.47 | **0.87** | 5.3 |
+| ShuffleNetV2 | 1.38 | 2.20 | 8.7 |
+| LightM-UNet | 1.15 | 4.28 | 30.2 |
+| **ULS-Net (ours)** | **0.16** | 1.85 | **3.0** |
+
+ULS-Net is 7.2× smaller than the next-smallest model (LightM-UNet) and achieves the fastest inference time at 3.0ms/image — faster than all competitors including UNeXt (5.3ms) which has nearly 10× more parameters.
+
+## Ablation Study (PH2)
+
+| Variant | EDSC | SEM | BDM | F1 | mIoU | Params (K) | ΔmIoU |
+|---------|------|-----|-----|----|------|-----------|-------|
+| Baseline | ✓ | | | 0.9158 | 0.8771 | 125.54 | — |
+| + SEM | ✓ | ✓ | | 0.9134 | 0.8774 | 161.18 | +0.03 |
+| + BDM | ✓ | | ✓ | 0.9301 | 0.8957 | 126.29 | +1.86 |
+| **ULS-Net (full)** | ✓ | ✓ | ✓ | **0.9312** | **0.8976** | 161.94 | **+2.05** |
+
+The full model's +2.05% mIoU gain exceeds the sum of individual gains (+0.03% + +1.86% = +1.89%), confirming the division-of-labour principle: with boundary preservation handled by the BDM, the SEM focuses entirely on semantics, amplifying both components' effectiveness beyond their independent contributions.
+
+## Requirements
+
+- Python ≥ 3.7.5
+- PyTorch ≥ 2.2.0
+- OpenCV ≥ 4.9.0
+- NumPy ≥ 1.26.4
+- SciPy ≥ 1.11.4
+- Matplotlib ≥ 3.8.0
+- NVIDIA GPU with 8 GB VRAM
 
 ```bash
-python evaluate.py --dataset ISIC2017 --model_path checkpoints/best_model.pth
+pip install torch torchvision opencv-python numpy scipy matplotlib
 ```
 
-This will compute:
-- Mean Intersection over Union (mIoU)
-- F1-Score (Dice Coefficient)
-- Precision
-- Recall
-- Inference time per image
+## Training
 
+```bash
+python code/main.py \
+  --mode train \
+  --dataset ISIC2018 \
+  --image_size 225 \
+  --batch_size 4 \
+  --num_epochs 100 \
+  --lr 1e-3
+```
 
----
+## Testing
 
-##  Contact
+```bash
+python code/main.py \
+  --mode test \
+  --dataset ISIC2018 \
+  --image_size 225
+```
 
-**Razan Alharith**  
-Southwest Jiaotong University  | Email: razanalharith@my.swjtu.edu.cn
+## Datasets
 
+| Dataset | Total | Train | Validation | Test |
+|---------|-------|-------|-----------|------|
+| ISIC-2017 | 2,000 | 1,250 | 150 | 600 |
+| ISIC-2018 | 3,694 | 2,594 | 100 | 1,000 |
+| PH2 | 200 | 140 | 20 | 40 |
+
+All images resized to 225×225. Ground-truth masks binarised at threshold 0.8.
+
+## Citation
+
+If you use this code in your research, please cite:
+
+```bibtex
+@misc{alharith2025ulsnet,
+  title   = {{ULS-Net}: A Boundary-Semantic Decoupled Network for
+             Ultra-Lightweight Skin Lesion Segmentation in
+             Resource-Limited Clinical Settings},
+  author  = {Alharith, Razan},
+  year    = {2025},
+  url     = {https://github.com/razanharith/ULS-Net}
+}
+```
+
+## Contact
+
+For questions about this research, contact Razan Alharith at razanalharith@my.swjtu.edu.cn.
