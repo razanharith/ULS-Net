@@ -159,7 +159,7 @@ If you use this code in your research, please cite:
              Skin Lesion Segmentation in Resource-Constrained
              Clinical Settings},
   author  = {Alharith, Razan},
-  year    = {2025},
+  year    = {2026},
   url     = {https://github.com/razanharith/ULS-Net}
 }
 ```
