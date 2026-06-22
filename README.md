@@ -1,8 +1,8 @@
-# ULS-Net: A Boundary-Semantic Decoupled Network for Ultra-Lightweight Skin Lesion Segmentation
+# ULS-Net: An Ultra-Lightweight Boundary-Aware Network for Skin Lesion Segmentation in Resource-Constrained Clinical Settings
 
 ## Overview
 
-ULS-Net (ULtra-Lightweight Segmentation Network) is a boundary-semantic decoupled architecture for skin lesion segmentation targeting resource-constrained clinical deployment — primary care offices, rural clinics, and mobile health platforms. The model achieves **0.16M Parameters | 1.85 GFLOPs | 3.0ms Inference Time**, making it 7.2× smaller than the next-smallest comparable model while attaining the best F1-score and mIoU on two of three benchmarks.
+ULS-Net (ULtra-Lightweight Segmentation Network) is a boundary-semantic decoupled architecture for skin lesion segmentation targeting resource-constrained clinical deployment — primary care offices, rural clinics, and mobile health platforms. The model achieves **0.16M Parameters | 1.85 GFLOPs | 3.09ms Inference Time**, making it 7.2× smaller than the next-smallest comparable model while attaining the best F1-score and mIoU on two of three benchmarks.
 
 ## Architecture
 
@@ -63,7 +63,7 @@ $$\mathcal{L}_\text{total} = \mathcal{L}_\text{BCE} + \alpha(\mathcal{L}_\text{D
 | UNeXt | 0.7932 | 0.7860 | 0.8563 | 0.8292 | 1.47M |
 | ShuffleNetV2 | 0.8002 | 0.7899 | 0.8504 | 0.8256 | 1.38M |
 | LightM-UNet | 0.7415 | 0.7490 | 0.7878 | 0.7628 | 1.15M |
-| **ULS-Net (ours)** | 0.7978 | 0.7989 | **0.8693** | **0.8408** | **0.16M** |
+| **ULS-Net (ours)** | 0.7968 | 0.7966 | **0.8693** | **0.8408** | **0.16M** |
 
 ### PH2
 
@@ -75,9 +75,9 @@ $$\mathcal{L}_\text{total} = \mathcal{L}_\text{BCE} + \alpha(\mathcal{L}_\text{D
 | UNeXt | 0.8773 | **0.9536** | 0.9079 | 0.8514 | 1.47M |
 | ShuffleNetV2 | 0.9020 | 0.9330 | 0.9080 | 0.8543 | 1.38M |
 | LightM-UNet | 0.9274 | 0.8825 | 0.9017 | 0.8382 | 1.15M |
-| **ULS-Net (ours)** | **0.9355** | 0.9443 | **0.9379** | **0.9040** | **0.16M** |
+| **ULS-Net (ours)** | **0.9354** | 0.9330 | **0.9312** | **0.8976** | **0.16M** |
 
-ULS-Net achieves the best F1 and mIoU on ISIC-2018 and PH2, outperforming models with up to 24× more parameters. On ISIC-2017, it achieves the highest Precision (0.9227) across all models.
+ULS-Net achieves the best F1 and mIoU on ISIC-2018 and PH2, outperforming models with up to 24× more parameters. On ISIC-2017, it achieves the highest Precision (0.9043) across all models.
 
 ### Model Complexity
 
@@ -89,9 +89,9 @@ ULS-Net achieves the best F1 and mIoU on ISIC-2018 and PH2, outperforming models
 | UNeXt | 1.47 | **0.87** | 5.3 |
 | ShuffleNetV2 | 1.38 | 2.20 | 8.7 |
 | LightM-UNet | 1.15 | 4.28 | 30.2 |
-| **ULS-Net (ours)** | **0.16** | 1.85 | **3.0** |
+| **ULS-Net (ours)** | **0.16** | 1.85 | **3.09** |
 
-ULS-Net is 7.2× smaller than the next-smallest model (LightM-UNet) and achieves the fastest inference time at 3.0ms/image — faster than all competitors including UNeXt (5.3ms) which has nearly 10× more parameters.
+ULS-Net is 7.2× smaller than the next-smallest model (LightM-UNet) and achieves the fastest inference time at 3.09ms/image — faster than all competitors including UNeXt (5.3ms) which has nearly 10× more parameters.
 
 ## Ablation Study (PH2)
 
@@ -145,7 +145,7 @@ python code/main.py \
 |---------|-------|-------|-----------|------|
 | ISIC-2017 | 2,000 | 1,250 | 150 | 600 |
 | ISIC-2018 | 3,694 | 2,594 | 100 | 1,000 |
-| PH2 | 200 | 140 | 20 | 40 |
+| PH2 | 202 | 142 | 20 | 40 |
 
 All images resized to 225×225. Ground-truth masks binarised at threshold 0.8.
 
@@ -155,9 +155,9 @@ If you use this code in your research, please cite:
 
 ```bibtex
 @misc{alharith2025ulsnet,
-  title   = {{ULS-Net}: A Boundary-Semantic Decoupled Network for
-             Ultra-Lightweight Skin Lesion Segmentation in
-             Resource-Limited Clinical Settings},
+  title   = {{ULS-Net}: An Ultra-Lightweight Boundary-Aware Network for
+             Skin Lesion Segmentation in Resource-Constrained
+             Clinical Settings},
   author  = {Alharith, Razan},
   year    = {2025},
   url     = {https://github.com/razanharith/ULS-Net}
